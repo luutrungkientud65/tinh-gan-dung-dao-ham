@@ -1,0 +1,210 @@
+import numpy as np
+
+def diff_forward(f, x, h, order=1):
+    """
+    Tính đạo hàm cấp 1 bằng sai phân tiến.
+    - order=1: O(h), công thức 2 điểm: f'(x) ≈ (f(x + h) - f(x)) / h
+    - order=2: O(h^2), công thức 3 điểm: f'(x) ≈ (-3f(x) + 4f(x + h) - f(x + 2h)) / (2h)
+    """
+    if order == 1:
+        return (f(x + h) - f(x)) / h
+    elif order == 2:
+        return (-3.0 * f(x) + 4.0 * f(x + h) - f(x + 2.0 * h)) / (2.0 * h)
+    else:
+        raise ValueError("Order chỉ hỗ trợ giá trị 1 hoặc 2")
+
+def diff_backward(f, x, h, order=1):
+    """
+    Tính đạo hàm cấp 1 bằng sai phân lùi.
+    - order=1: O(h), công thức 2 điểm: f'(x) ≈ (f(x) - f(x - h)) / h
+    - order=2: O(h^2), công thức 3 điểm: f'(x) ≈ (3f(x) - 4f(x - h) + f(x - 2h)) / (2h)
+    """
+    if order == 1:
+        return (f(x) - f(x - h)) / h
+    elif order == 2:
+        return (3.0 * f(x) - 4.0 * f(x - h) + f(x - 2.0 * h)) / (2.0 * h)
+    else:
+        raise ValueError("Order chỉ hỗ trợ giá trị 1 hoặc 2")
+
+def diff_central(f, x, h):
+    """
+    Tính đạo hàm cấp 1 bằng sai phân trung tâm O(h^2)[cite: 2]:
+    f'(x) ≈ (f(x + h) - f(x - h)) / (2h)[cite: 2]
+    """
+    return (f(x + h) - f(x - h)) / (2.0 * h)
+
+def diff2_central(f, x, h):
+    """
+    Tính đạo hàm cấp 2 bằng sai phân trung tâm O(h^2)[cite: 2]:
+    f''(x) ≈ (f(x + h) - 2f(x) + f(x - h)) / (h^2)[cite: 2]
+    """
+    return (f(x + h) - 2.0 * f(x) + f(x - h)) / (h ** 2)
+
+def diff_lagrange(xs, ys, k):
+    """
+    Tính đạo hàm tại nút x_k dựa trên đạo hàm của đa thức nội suy Lagrange[cite: 2].
+    Áp dụng cho mốc bất kỳ (không nhất thiết cách đều)[cite: 2].
+    P'(x_k) = sum_{j != k} y_j * L'_j(x_k) + y_k * L'_k(x_k)[cite: 2]
+    với:
+      L'_j(x_k) = (1 / (x_j - x_k)) * prod_{m != j, k} ((x_k - x_m) / (x_j - x_m))
+      L'_k(x_k) = sum_{m != k} 1 / (x_k - x_m)
+    """
+    xs = np.asarray(xs, dtype=float)
+    ys = np.asarray(ys, dtype=float)
+    n = len(xs)
+    
+    if not (0 <= k < n):
+        raise IndexError("Chỉ số k nằm ngoài phạm vi mốc nội suy.")
+        
+    deriv = 0.0
+    for i in range(n):
+        if i == k:
+            # Thành phần đạo hàm của L_k tại x_k
+            coeff = sum(1.0 / (xs[k] - xs[m]) for m in range(n) if m != k)
+        else:
+            # Thành phần đạo hàm của L_i tại x_k (i != k)
+            prod_val = 1.0
+            for m in range(n):
+                if m != i and m != k:
+                    prod_val *= (xs[k] - xs[m]) / (xs[i] - xs[m])
+            coeff = prod_val / (xs[i] - xs[k])
+        deriv += ys[i] * coeff
+        
+    return float(deriv)
+
+def diff_table(xs, ys):
+    """
+    Tính đạo hàm tại mọi nút của bảng số liệu cách đều[cite: 2].
+    - Nút đầu (i = 0): Dùng sai phân tiến 3 điểm O(h^2)[cite: 2].
+    - Nút cuối (i = -1): Dùng sai phân lùi 3 điểm O(h^2)[cite: 2].
+    - Các nút bên trong: Dùng sai phân trung tâm O(h^2)[cite: 2].
+    """
+    xs = np.asarray(xs, dtype=float)
+    ys = np.asarray(ys, dtype=float)
+    n = len(xs)
+    if n < 3:
+        raise ValueError("Cần tối thiểu 3 điểm mốc để tính sai số bậc O(h^2)")
+        
+    h = xs[1] - xs[0]
+    derivs = np.zeros(n, dtype=float)
+    
+    # Nút biên đầu: sai phân tiến 3 điểm O(h^2)[cite: 2]
+    derivs[0] = (-3.0 * ys[0] + 4.0 * ys[1] - ys[2]) / (2.0 * h)
+    
+    # Nút bên trong: sai phân trung tâm O(h^2)[cite: 2]
+    for i in range(1, n - 1):
+        derivs[i] = (ys[i + 1] - ys[i - 1]) / (2.0 * h)
+        
+    # Nút biên cuối: sai phân lùi 3 điểm O(h^2)[cite: 2]
+    derivs[-1] = (3.0 * ys[-1] - 4.0 * ys[-2] + ys[-3]) / (2.0 * h)
+    
+    return derivs
+import pytest
+import numpy as np
+from differentiation import (
+    diff_forward,
+    diff_backward,
+    diff_central,
+    diff2_central,
+    diff_lagrange,
+    diff_table,
+)
+
+def test_exponential_case():
+    """Kiểm thử bắt buộc với f(x) = exp(-x^2) tại x=0.5[cite: 2]"""
+    f = lambda x: np.exp(-x**2)
+    x = 0.5
+    h = 1e-4
+    
+    # Nghiệm giải tích[cite: 2]:
+    # f'(x) = -2x * exp(-x^2) => f'(0.5) = -exp(-0.25) ≈ -0.778800783...
+    exact_f1 = -np.exp(-0.25)
+    
+    # f''(x) = (4x^2 - 2)*exp(-x^2) => f''(0.5) = (1 - 2)*exp(-0.25) = -exp(-0.25)
+    exact_f2 = -np.exp(-0.25)
+    
+    assert diff_forward(f, x, h, order=1) == pytest.approx(exact_f1, rel=1e-3)
+    assert diff_forward(f, x, h, order=2) == pytest.approx(exact_f1, rel=1e-6)
+    assert diff_backward(f, x, h, order=1) == pytest.approx(exact_f1, rel=1e-3)
+    assert diff_backward(f, x, h, order=2) == pytest.approx(exact_f1, rel=1e-6)
+    assert diff_central(f, x, h) == pytest.approx(exact_f1, rel=1e-7)
+    assert diff2_central(f, x, h) == pytest.approx(exact_f2, rel=1e-6)
+
+def test_polynomial_accuracy():
+    """Kiểm thử tính chính xác tuyệt đối trên đa thức bậc 2[cite: 2]"""
+    # f(x) = 2x^2 + 3x + 1 => f'(x) = 4x + 3, f''(x) = 4
+    f = lambda x: 2.0 * x**2 + 3.0 * x + 1.0
+    x = 2.0
+    h = 0.05
+    
+    # Sai phân trung tâm và tiến/lùi bậc 2 phải triệt tiêu sai số cắt cụt đối với đa thức bậc 2
+    assert diff_forward(f, x, h, order=2) == pytest.approx(11.0, abs=1e-10)
+    assert diff_central(f, x, h) == pytest.approx(11.0, abs=1e-10)
+    assert diff2_central(f, x, h) == pytest.approx(4.0, abs=1e-9)
+
+def test_diff_lagrange():
+    """Kiểm thử Lagrange trên các mốc không cách đều[cite: 2]"""
+    # f(x) = x^3 - 2x => f'(x) = 3x^2 - 2
+    xs = np.array([0.0, 1.0, 2.5, 4.0])
+    ys = xs**3 - 2.0 * xs
+    
+    # Tại k = 1 (x = 1.0): f'(1.0) = 3(1) - 2 = 1.0
+    df_lagrange_1 = diff_lagrange(xs, ys, k=1)
+    # Vì nội suy bậc 3 trên đúng 4 điểm của hàm bậc 3 là trùng khớp, đạo hàm sẽ bằng chính xác
+    assert df_lagrange_1 == pytest.approx(1.0, abs=1e-8)
+
+def test_diff_table_boundaries():
+    """Kiểm thử ca biên bảng: không được dùng sai phân trung tâm tại biên[cite: 2]"""
+    # Lập bảng với f(x) = x^2 => f'(x) = 2x
+    xs = np.linspace(1.0, 3.0, 11)
+    ys = xs**2
+    derivs = diff_table(xs, ys)
+    
+    exact_derivs = 2.0 * xs
+    # Sai phân bậc 2 chính xác hoàn toàn cho đa thức bậc 2
+    np.testing.assert_allclose(derivs, exact_derivs, atol=1e-10)
+import numpy as np
+import matplotlib.pyplot as plt
+
+f = lambda x: np.exp(-x**2)
+x0 = 0.5
+exact_val = -np.exp(-0.25)
+
+h_list = np.array([10**(-i) for i in range(1, 13)], dtype=float)
+
+err_fwd1 = []
+err_fwd2 = []
+err_cen = []
+err_cen2 = []
+
+for h in h_list:
+    # Sai số f'(x)
+    err_fwd1.append(abs((f(x0 + h) - f(x0)) / h - exact_val))
+    err_fwd2.append(abs((-3*f(x0) + 4*f(x0 + h) - f(x0 + 2*h)) / (2*h) - exact_val))
+    err_cen.append(abs((f(x0 + h) - f(x0 - h)) / (2*h) - exact_val))
+    
+    # Sai số f''(x)
+    exact_d2 = -np.exp(-0.25)
+    err_cen2.append(abs((f(x0 + h) - 2*f(x0) + f(x0 - h)) / (h**2) - exact_d2))
+
+# In bảng kết quả
+print(f"{'h':<10} | {'Err Fwd O(h)':<15} | {'Err Fwd O(h^2)':<15} | {'Err Cen O(h^2)':<15}")
+print("-" * 65)
+for i in range(len(h_list)):
+    print(f"{h_list[i]:<10.0e} | {err_fwd1[i]:<15.6e} | {err_fwd2[i]:<15.6e} | {err_cen[i]:<15.6e}")
+
+# Vẽ đồ thị log-log[cite: 2]
+plt.figure(figsize=(10, 6))
+plt.loglog(h_list, err_fwd1, 'o--', label=r'Tiến bậc 1 $\mathcal{O}(h)$')
+plt.loglog(h_list, err_fwd2, 's--', label=r'Tiến bậc 2 $\mathcal{O}(h^2)$')
+plt.loglog(h_list, err_cen, '^--', label=r'Trung tâm $\mathcal{O}(h^2)$')
+plt.loglog(h_list, err_cen2, 'd--', label=r'Đạo hàm cấp 2 $\mathcal{O}(h^2)$')
+
+plt.xlabel('Bước nhảy h')
+plt.ylabel('Sai số tuyệt đối')
+plt.title(r'Đồ thị so sánh sai số đạo hàm theo bước $h$ (log-log) tại $x=0.5$')
+plt.grid(True, which="both", ls=":")
+plt.legend()
+plt.tight_layout()
+plt.savefig('error_analysis.png', dpi=300)
+plt.show()
