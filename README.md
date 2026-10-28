@@ -1,2 +1,7 @@
-# T-nh-g-n-ng-o-h-m
-bài tập nhóm 5 
+hàm python:
+mai tiến đạt 
+phạm ngọc ý
+trần anh hào
+đinh nam anh
+kiểm thử pytest
+Hoàng minh tuấn
