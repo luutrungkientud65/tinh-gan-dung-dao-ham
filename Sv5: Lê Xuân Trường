@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def f(x):
+    return np.exp(0.5 * x) * np.sin(x)
+
+a, b = 0.0, 3.0
+n_points = 6
+x = np.linspace(a, b, n_points)
+y = f(x)
+h = x[1] - x[0]
+
+def forward_difference_table(x, y):
+    n = len(y)
+    table = np.zeros((n, n + 1))
+    table[:, 0] = x
+    table[:, 1] = y
+    for j in range(2, n + 1):
+        for i in range(0, n - j + 1):
+            table[i, j] = table[i+1, j-1] - table[i, j-1]
+    columns = ['x_i', 'y_i (Δ^0)'] + [f'Δ^{j-1}y' for j in range(2, n + 1)]
+    return pd.DataFrame(table, columns=columns)
+
+df_diff = forward_difference_table(x, y)
+print(df_diff.to_string(index=False, na_rep=''))
+
+def newton_forward_interpolation(x_val, x, table_matrix):
+    n = len(x)
+    h = x[1] - x[0]
+    u = (x_val - x[0]) / h
+    p_val = table_matrix[0, 1]
+    u_product = 1.0
+    fact = 1.0
+    for i in range(1, n):
+        u_product *= (u - (i - 1))
+        fact *= i
+        delta_val = table_matrix[0, i + 1]
+        p_val += (u_product * delta_val) / fact
+    return p_val
+
+x_smooth = np.linspace(a, b, 300)
+y_exact = f(x_smooth)
+y_interp = [newton_forward_interpolation(xi, x, df_diff.values) for xi in x_smooth]
+
+plt.figure(figsize=(10, 6))
+plt.plot(x_smooth, y_exact, 'b-', label='Hàm chính xác f(x)', linewidth=2.5)
+plt.plot(x_smooth, y_interp, 'r--', label='Đa thức nội suy Newton tiến P_n(x)', linewidth=2.0)
+plt.scatter(x, y, color='black', zorder=5, label='Các điểm mốc')
+plt.title('So sánh Hàm số gốc và Đa thức nội suy')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.grid(True, linestyle=':', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
+max_error = np.max(np.abs(np.array(y_exact) - np.array(y_interp)))
+print(f"Max error: {max_error:.6e}")
