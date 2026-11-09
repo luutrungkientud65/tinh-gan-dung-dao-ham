@@ -5,7 +5,7 @@ def diff_center_2(f, x, h):
     if h <= 0:
         raise ValueError("h phai lon hon 0")
 
-    #2. Kiem tra diem tinh
+    #2. Kiem tra diem tinh của
     if x - h <= 0:
         raise ValueError("Can kiem tra mien xac dinh cua ham")
 
