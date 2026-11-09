@@ -1,0 +1,32 @@
+def diff_central(f, x, h):
+    """
+    Tinh gan dung dao ham bac nhat bang sai phan trung tam.
+    Thuat toan: Cong thuc (5.3), Chuong 5.
+
+    Require:
+        f: Ham so can tinh dao ham.
+        x: Diem can tinh dao ham.
+        h: Buoc sai phan, h > 0.
+
+    Ensure:
+        Tra ve gia tri gan dung cua f'(x).
+        Sai so cat cut truc co bac O(h^2).
+    """
+
+    # Buoc 1: Kiem tra ham so dau vao.
+    if not callable(f):
+        raise TypeError("f phai la mot ham so co the goi")
+
+    # Buoc 2: Kiem tra buoc sai phan.
+    if h <= 0:
+        raise ValueError("h phai lon hon 0")
+
+    # Buoc 3: Tinh gia tri ham tai x+h va x-h.
+    f_plus = f(x + h)
+    f_minus = f(x - h)
+
+    # Buoc 4: Ap dung cong thuc (5.3).
+    result = (f_plus - f_minus) / (2 * h)
+
+    # Buoc 5: Tra ve ket qua.
+    return result
