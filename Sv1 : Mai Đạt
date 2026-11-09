@@ -1,5 +1,8 @@
 Sai phân tiến cấp 1 và ví dụ 
 import numpy as np
+ #1. Kiem tra buoc luoi
+    if h <= 0:
+        raise ValueError("h phai lon hon 0")
 
 # Sai phan tien cap 1
 
@@ -27,7 +30,13 @@ print("Dao ham sai phan tien cap 1 tai x=0.5 la", result)
 
 Sai phân lùi cấp 1 và ví dụ
 import numpy as np
+ #1. Kiem tra buoc luoi
+    if h <= 0:
+        raise ValueError("h phai lon hon 0")
 
+    #2. Kiem tra diem tinh
+    if x - h <= 0:
+        raise ValueError("Can kiem tra mien xac dinh cua ham")
 # Sai phan lui cap 1
 def diff_backward(f, x, h):
     return (f(x) - f(x-h)) / h
@@ -51,6 +60,10 @@ print("h =", h)
 print("x =", x)import numpy as np
 
 # Sai phan tien cap 2
+ #1. Kiem tra buoc luoi
+    if h <= 0:
+        raise ValueError("h phai lon hon 0")
+  #2.Cong thuc sai phan cap 2
 def diff_forward(f, x, h):
     return (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
 
