@@ -1,4 +1,4 @@
-Sai phân tiến cấp 1 và ví dụ 
+#Sai phân tiến cấp 1 và ví dụ 
 import numpy as np
 
 # Sai phan tien cap 1
@@ -30,8 +30,8 @@ result = diff_forward(f, x, h, order=1)
 print("h =", h)
 print("x =", x)
 print("Dao ham sai phan tien cap 1 tai x=0.5 la", result)
-
-Sai phân lùi cấp 1 và ví dụ
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Sai phân lùi cấp 1 và ví dụ
 import numpy as np
 
 # Sai phan lui cap 1
@@ -67,8 +67,9 @@ result = diff_backward(f, x, h)
 print("h =", h)
 print("x =", x)
 print("Dao ham sai phan lui cap 1 tai  x=0.5", result)
-
-# Sai phan tien cap 2
+# Sai phân tiến cấp 2 và ví dụ
+import numpy as np
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Sai phan tien cap 2
 def diff_forward(f, x, h, order=2) -> float:
 
