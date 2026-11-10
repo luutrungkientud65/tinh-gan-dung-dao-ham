@@ -1,17 +1,20 @@
 Sai phân tiến cấp 1 và ví dụ 
 import numpy as np
- #1. Kiem tra buoc luoi
-    if h <= 0:
-        raise ValueError("h phai lon hon 0")
 
 # Sai phan tien cap 1
-
 def diff_forward(f, x, h, order=1) -> float:
+
+    #1. Kiem tra buoc luoi
+    if h <= 0:
+        raise ValueError("h phai lon hon 0")
+    #2. Cong thuc tinh
     return (f(x+h) - f(x)) / h
 
-# Ham f(x) = e^(-x^2) đây là ví dụ 
+
+# Ham f(x) = e^(-x^2) đây là ví dụ
 def f(x):
     return np.exp(-x**2)
+
 
 # Du lieu
 a = 0
@@ -30,20 +33,25 @@ print("Dao ham sai phan tien cap 1 tai x=0.5 la", result)
 
 Sai phân lùi cấp 1 và ví dụ
 import numpy as np
- #1. Kiem tra buoc luoi
+
+# Sai phan lui cap 1
+def diff_backward(f, x, h, order=1) -> float:
+
+    #1. Kiem tra buoc luoi
     if h <= 0:
         raise ValueError("h phai lon hon 0")
 
     #2. Kiem tra diem tinh
     if x - h <= 0:
         raise ValueError("Can kiem tra mien xac dinh cua ham")
-# Sai phan lui cap 1
-def diff_backward(f, x, h, order=1) -> float:
+    #3. Cong thuc tinh
     return (f(x) - f(x-h)) / h
+
 
 # Ham f(x) = e^(-x^2)
 def f(x):
     return np.exp(-x**2)
+
 
 # Du lieu
 a = 0
@@ -57,19 +65,25 @@ x = 0.5
 result = diff_backward(f, x, h)
 
 print("h =", h)
-print("x =", x)import numpy as np
+print("x =", x)
+print("Dao ham sai phan lui cap 1 tai  x=0.5", result)
 
 # Sai phan tien cap 2
- #1. Kiem tra buoc luoi
+# Sai phan tien cap 2
+def diff_forward(f, x, h, order=2) -> float:
+
+    # 1. Kiem tra buoc luoi
     if h <= 0:
         raise ValueError("h phai lon hon 0")
-  #2.Cong thuc sai phan cap 2
-def diff_forward(f, x, h, order=2) -> float:
+
+    # 2. Cong thuc tinh
     return (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
+
 
 # Ham f(x) = e^(-x^2)
 def f(x):
     return np.exp(-x**2)
+
 
 # Du lieu
 a = 0
@@ -79,10 +93,9 @@ n = 10
 h = (b-a)/n
 x = 0.5
 
-# Tinh dao ham sai phan tien cap 2
+# Tinh dao ham
 result = diff_forward(f, x, h)
 
 print("h =", h)
 print("x =", x)
-print("Dao ham sai phan tien cap 2 tai x=0.5", result)
-print("Dao ham sai phan lui cap 1 tai x = 0.5 la :", result)
+print("Dao ham sai phan tien cap 2 tai x = 0.5:", result)
