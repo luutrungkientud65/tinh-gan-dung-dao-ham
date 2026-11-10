@@ -1,6 +1,6 @@
 import numpy as np
 
-def diff_center_2(f, x, h):
+
     #1. Kiem tra buoc luoi
     if h <= 0:
         raise ValueError("h phai lon hon 0")
@@ -10,6 +10,7 @@ def diff_center_2(f, x, h):
         raise ValueError("Can kiem tra mien xac dinh cua ham")
 
     #3. Tinh dao ham cap 2 sai phan trung tam
+def diff_center(f, x, h, order=2) -> float:
     result = (f(x + h) - 2*f(x) + f(x - h)) / h**2
 
     return result
