@@ -1,16 +1,17 @@
 import numpy as np
 
+# Sai phan trung tam cap 2
+def diff_center(f, x, h, order=2) -> float:
 
     #1. Kiem tra buoc luoi
     if h <= 0:
         raise ValueError("h phai lon hon 0")
 
-    #2. Kiem tra diem tinh của
+    #2. Kiem tra diem tinh
     if x - h <= 0:
         raise ValueError("Can kiem tra mien xac dinh cua ham")
 
     #3. Tinh dao ham cap 2 sai phan trung tam
-def diff_center(f, x, h, order=2) -> float:
     result = (f(x + h) - 2*f(x) + f(x - h)) / h**2
 
     return result
@@ -19,45 +20,11 @@ def diff_center(f, x, h, order=2) -> float:
 def f(x):
     return np.exp(-x**2)
 
-# De bai 
+# De bai
 x = 0.5
 h = 0.1
 
 # Tính đạo hàm cấp 2
-result = diff_center_2(f, x, h)
+result = diff_center(f, x, h, order=2)
 
-print("Dao ham cap 2 bang sai phan trung tam tai  f''(0.5) =", result)
-# Bai 5.2
-# Du lieu de bai
-x_data = np.array([0.98, 1, 1.02])
-y_data = np.array([0.773933, 0.765198, 0.756332])
-
-# Ham noi suy
-def f(x):
-    return np.interp(x, x_data, y_data)
-
-# Du lieu tinh
-x = 1
-h = 0.02
-
-# Tinh dao ham cap 2
-result = diff_center_2(f, x, h)
-
-print("Dao ham cap 2 bang sai phan trung tam tai f''(1) =", result)
-# Bai 5.5
- # Bang gia tri
-x_data = np.array([0.84, 0.92, 1.00, 1.08, 1.16])
-y_data = np.array([0.431711, 0.398519, 0.367879, 0.339596, 0.313486])
-
-# Ham noi suy tu bang gia tri
-def f(x):
-    return np.interp(x, x_data, y_data)
-
-# Du lieu tinh
-x = 1.00
-h = 0.08
-
-# Tinh dao ham
-result = diff_center_2(f, x, h)
-
-print("Dao ham cap 2 bang sai phan trung tam tai f''(1) =", result)
+print("Dao ham cap 2 bang sai phan trung tam tai f''(0.5) =", result)
