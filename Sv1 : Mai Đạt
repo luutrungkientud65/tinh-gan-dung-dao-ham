@@ -38,7 +38,7 @@ import numpy as np
     if x - h <= 0:
         raise ValueError("Can kiem tra mien xac dinh cua ham")
 # Sai phan lui cap 1
-def diff_backward(f, x, h):
+def diff_backward(f, x, h, order=1) -> float:
     return (f(x) - f(x-h)) / h
 
 # Ham f(x) = e^(-x^2)
@@ -64,7 +64,7 @@ print("x =", x)import numpy as np
     if h <= 0:
         raise ValueError("h phai lon hon 0")
   #2.Cong thuc sai phan cap 2
-def diff_forward(f, x, h):
+def diff_forward(f, x, h, order=2) -> float:
     return (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
 
 # Ham f(x) = e^(-x^2)
