@@ -11,7 +11,7 @@ def diff_center(f, x, h, order=2) -> float:
     if x - h <= 0:
         raise ValueError("Can kiem tra mien xac dinh cua ham")
 
-    #3. Tinh dao ham cap 2 sai phan trung tam
+    #3. Cong thuc tinh dao ham
     result = (f(x + h) - 2*f(x) + f(x - h)) / h**2
 
     return result
