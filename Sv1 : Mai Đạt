@@ -22,6 +22,8 @@ def diff_forward(f, x, h, order=1) -> float:
 
     # 2. Công thức tính sai phân tiến cấp 1
     return (f(x+h) - f(x)) / h
+
+    return result
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     SAI PHÂN LÙI CẤP 1
 import numpy as np
@@ -52,6 +54,7 @@ def diff_backward(f, x, h, order=1) -> float:
     # 3. Công thức tính sai phân lùi cấp 1
     return (f(x) - f(x-h)) / h
 
+    return result
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     SAI PHÂN TIẾN CẤP 2
 # P3: Phương pháp sai phân tiến cấp 2
@@ -75,3 +78,5 @@ def diff_forward(f, x, h, order=2) -> float:
 
     # 2. Công thức tính sai phân tiến cấp 2
     return (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
+
+    return result
