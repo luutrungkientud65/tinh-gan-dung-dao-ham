@@ -11,6 +11,7 @@ def diff_forward(f, x, a, b, n, order=1) -> float:
         b: Cận trên của đoạn tính (float hoặc int)
         n: Số khoảng chia (số nguyên dương)
         h: Bước lưới (số thực dương), h = (b-a)/n
+        order: Cấp sai phân (Cấp 1)
     ensure:
         float: Giá trị gần đúng của đạo hàm cấp 1 tại điểm x
     """
@@ -43,6 +44,7 @@ def diff_backward(f, x, a, b, n, order=1) -> float:
         b: Cận trên của đoạn tính (float hoặc int)
         n: Số khoảng chia (số nguyên dương)
         h: Bước lưới (số thực dương), h = (b-a)/n
+        order: Cấp sai phân (Cấp 1)
     ensure:
         float: Giá trị gần đúng của đạo hàm cấp 1 tại điểm x
     """
