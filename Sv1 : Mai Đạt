@@ -1,82 +1,102 @@
    SAI PHÂN TIẾN CẤP 1
 import numpy as np
-
 # P1: Phương pháp sai phân tiến cấp 1
-def diff_forward(f, x, h, order=1) -> float:
+def diff_forward(f, x, a, b, n, order=1) -> float:
     """
     Tên thuật toán: Phương pháp sai phân tiến cấp 1
-
     require:
         f: Hàm số cần tính đạo hàm (callable function)
         x: Điểm cần tính đạo hàm (float hoặc int)
-        h: Bước lưới (số thực dương)
-        order: Cấp sai phân (Cấp 1)
-
+        a: Cận dưới của đoạn tính (float hoặc int)
+        b: Cận trên của đoạn tính (float hoặc int)
+        n: Số khoảng chia (số nguyên dương)
+        h: Bước lưới (số thực dương), h = (b-a)/n
     ensure:
         float: Giá trị gần đúng của đạo hàm cấp 1 tại điểm x
     """
-
-    # 1. Kiểm tra bước lưới
-    if h <= 0:
-        raise ValueError("h phai lon hon 0")
-
-    # 2. Công thức tính sai phân tiến cấp 1
+# 1. Kiểm tra điều kiện
+    if a >= b:
+        raise ValueError("a phai nho hon b")
+    if not isinstance(n, int) or isinstance(n, bool) or n <= 0:
+        raise ValueError("n phai la so nguyen duong")
+    if x < a or x > b:
+        raise ValueError("x phai nam trong doan [a, b]")
+# 2. Tính bước lưới
+    h = (b-a)/n
+# 3. Kiểm tra bước lưới
+    if not isinstance(h, (int, float)) or h <= 0:
+        raise ValueError("h phai la so thuc duong")
+# 4. Công thức sai phân tiến cấp 1
     return (f(x+h) - f(x)) / h
-
     return result
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     SAI PHÂN LÙI CẤP 1
 import numpy as np
-
 # P2: Phương pháp sai phân lùi cấp 1
-def diff_backward(f, x, h, order=1) -> float:
+def diff_backward(f, x, a, b, n, order=1) -> float:
     """
     Tên thuật toán: Phương pháp sai phân lùi cấp 1
-
     require:
         f: Hàm số cần tính đạo hàm (callable function)
         x: Điểm cần tính đạo hàm (float hoặc int)
-        h: Bước lưới (số thực dương)
-        order: Cấp sai phân (Cấp 1)
-
+        a: Cận dưới của đoạn tính (float hoặc int)
+        b: Cận trên của đoạn tính (float hoặc int)
+        n: Số khoảng chia (số nguyên dương)
+        h: Bước lưới (số thực dương), h = (b-a)/n
     ensure:
         float: Giá trị gần đúng của đạo hàm cấp 1 tại điểm x
     """
-
-    # 1. Kiểm tra bước lưới
-    if h <= 0:
-        raise ValueError("h phai lon hon 0")
-
-    # 2. Kiểm tra điểm tính
-    if x - h <= 0:
-        raise ValueError("Can kiem tra mien xac dinh cua ham")
-
-    # 3. Công thức tính sai phân lùi cấp 1
+# 1. Kiểm tra điều kiện
+    if a >= b:
+        raise ValueError("a phai nho hon b")
+    if not isinstance(n, int) or isinstance(n, bool) or n <= 0:
+        raise ValueError("n phai la so nguyen duong")
+    if x < a or x > b:
+        raise ValueError("x phai nam trong doan [a, b]")
+# 2. Tính bước lưới
+    h = (b-a)/n
+# 3. Kiểm tra bước lưới
+    if not isinstance(h, (int, float)) or isinstance(h, bool) or h <= 0:
+        raise ValueError("h phai la so thuc duong")
+# 4. Kiểm tra điểm x-h
+    if x - h < a:
+        raise ValueError("x-h vuot qua can duoi a")
+# 5. Công thức sai phân lùi cấp 1
     return (f(x) - f(x-h)) / h
-
     return result
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     SAI PHÂN TIẾN CẤP 2
+import numpy as np
 # P3: Phương pháp sai phân tiến cấp 2
-def diff_forward(f, x, h, order=2) -> float:
+def diff_forward(f, x, a, b, n, order=2) -> float:
     """
     Tên thuật toán: Phương pháp sai phân tiến cấp 2
-
     require:
         f: Hàm số cần tính đạo hàm (callable function)
         x: Điểm cần tính đạo hàm (float hoặc int)
-        h: Bước lưới (số thực dương)
+        a: Cận dưới của đoạn tính (float hoặc int)
+        b: Cận trên của đoạn tính (float hoặc int)
+        n: Số khoảng chia (số nguyên dương)
+        h: Bước lưới (số thực dương), h = (b-a)/n
         order: Cấp sai phân (Cấp 2)
-
     ensure:
         float: Giá trị gần đúng của đạo hàm cấp 1 tại điểm x
     """
-
-    # 1. Kiểm tra bước lưới
-    if h <= 0:
-        raise ValueError("h phai lon hon 0")
-
-    # 2. Công thức tính sai phân tiến cấp 2
-    return (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
-
+# 1. Kiểm tra điều kiện
+    if a >= b:
+        raise ValueError("a phai nho hon b")
+    if not isinstance(n, int) or isinstance(n, bool) or n <= 0:
+        raise ValueError("n phai la so nguyen duong")
+    if x < a or x > b:
+        raise ValueError("x phai nam trong doan [a, b]")
+# 2. Tính bước lưới
+    h = (b-a)/n
+# 3. Kiểm tra bước lưới
+    if not isinstance(h, (int, float)) or isinstance(h, bool) or h <= 0:
+        raise ValueError("h phai la so thuc duong")
+# 4. Kiểm tra điểm x+2h
+    if x + 2*h > b:
+        raise ValueError("x+2h vuot qua can tren b")
+# 5. Công thức tính sai phân tiến cấp 2
+    result = (-3*f(x) + 4*f(x+h) - f(x+2*h)) / (2*h)
     return result
